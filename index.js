@@ -7,7 +7,7 @@ const logRoutes = require('./routes/log');
 const userRoutes = require('./routes/user');
 require('dotenv').config();
 
-mongoose.connect('mongodb://localhost:27017/exercise_tracker')
+mongoose.connect(process.env.DATABASE_URL)
 
 app.use(cors())
 app.use(express.static('public'))

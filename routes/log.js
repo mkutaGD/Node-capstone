@@ -27,7 +27,7 @@ router.get("/", (req, res) => {
       userLog.count = userLog.log.length;
       res.json(userLog);
     })
-    .catch((err) => res.json({ ...err, statusCode: res.statusCode }));
+    .catch((err) => res.json({ ...err, statusCode: 400 }));
 });
 
 module.exports = router;

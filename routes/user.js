@@ -12,14 +12,24 @@ router.post("/", (req, res) => {
   }
   User.create({ username: req.body.username })
     .then((createdUser) => res.json(createdUser))
-    .catch((err) => res.json({ ...err, statusCode: res.statusCode }));
+    .catch((err) => {
+      if(err.code === 11000){
+        return res.json({ statusCode: 400, message: 'There is already user with this username' })
+      }
+      res.json({ ...err, statusCode: 400 })
+    });
 });
 
 router.get("/", (req, res) => {
   User.find({})
     .exec()
-    .then((users) => res.json(users))
-    .catch((err) => res.json({ ...err, statusCode: res.statusCode }));
+    .then((users) => {
+      if(!users) {
+        return res.json({ statusCode: 404, message: 'No uswe was found' })
+      }
+      res.json(users)
+    })
+    .catch((err) => res.json({ ...err, statusCode: 400 }));
 });
 
 module.exports = router;

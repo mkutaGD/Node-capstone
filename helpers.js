@@ -27,9 +27,10 @@ function findOrCreateLog(exercise, user, response) {
             .then((createdLog) => {
               response.json(exercise);
             })
-            .catch((err) => response.json({...err, statusCode: response.statusCode}));
+            .catch((err) => response.json({...err, statusCode: 400}));
         }
       })
-      .catch((err) => response.json({...err, statusCode: response.statusCode}));
+      .catch((err) => response.json({...err, statusCode: 400}));
   }
-  
+ 
+module.exports = findOrCreateLog;
