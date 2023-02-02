@@ -3,7 +3,6 @@ const app = express()
 const mongoose = require("mongoose");
 const cors = require('cors');
 const exerciseRoutes = require('./routes/exercise');
-const logRoutes = require('./routes/log');
 const userRoutes = require('./routes/user');
 require('dotenv').config();
 
@@ -18,15 +17,14 @@ app.get('/', (req, res) => {
 
 
 app.use('/api/users', userRoutes);
-app.use('/api/users/:_id/logs', logRoutes);
 app.use('/api/users/:_id/exercises', exerciseRoutes);
 
 app.post("*", (req, res) => {
-  res.json({ statusCode: res.statusCode, message: "Not Found. Probably you need to specify user id in new exercise form" })
+  res.json({ statusCode: 400, message: "Not Found. Probably you need to specify user id in new exercise form" })
 })
 
 app.get("*", (req, res) => {
-  res.json({ statusCode: res.statusCode, message: "Not Found" })
+  res.json({ statusCode: 400, message: "Not Found" })
 })
 
 const listener = app.listen(process.env.PORT || 3000, () => {
