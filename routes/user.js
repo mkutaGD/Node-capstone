@@ -4,6 +4,7 @@ const User = require('../models/user');
 const isBefore = require('date-fns/isBefore');
 const isAfter = require('date-fns/isAfter');
 const Exercise = require('../models/exercise');
+const exercise = require("../models/exercise");
 
 
 router.post("/", (req, res) => {
@@ -28,7 +29,7 @@ router.get("/", (req, res) => {
     .exec()
     .then((users) => {
       if(!users) {
-        return res.json({ statusCode: 404, message: 'No uswe was found' })
+        return res.json({ statusCode: 404, message: 'No users were found' })
       }
       res.json(users)
     })
@@ -39,8 +40,8 @@ router.get("/:_id/logs", (req, res) => {
   User.findById(req.params._id)
     .then((user) => {
       Exercise.find({ user: req.params._id })
-        .limit(+req.query.limit)
         .sort({ date: 1 })
+        .limit(+req.query.limit)
         .exec()
         .then((exercises) => {
           if (req.query.from && req.query.to) {
@@ -50,6 +51,10 @@ router.get("/:_id/logs", (req, res) => {
                 isBefore(new Date(exercise.date), new Date(req.query.to))
             );
           }
+          exercises = exercises.map((exercise) => {
+            return {...exercise, date: new Date(exercise.date).toDateString()};
+          });
+          console.log(exercises)
           res.json({
             username: user.username,
             userId: user._id,

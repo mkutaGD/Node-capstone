@@ -26,7 +26,7 @@ router.post("/", (req, res) => {
           message: 'Invalid Date'
         })
       } 
-      exerciseDate = req.body.date !== '' ? new Date(req.body.date).toDateString() : new Date().toDateString();
+      exerciseDate = req.body.date !== '' ? new Date(req.body.date) : new Date();
       
       let newExercise = new Exercise({
         user: user,
