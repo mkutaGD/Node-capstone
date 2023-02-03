@@ -48,8 +48,20 @@ router.get("/:_id/logs", (req, res) => {
           if (req.query.from && req.query.to) {
             exercises = exercises.filter(
               (exercise) =>
-                isAfter(new Date(exercise.date), new Date(req.query.from)) &&
-                isBefore(new Date(exercise.date), new Date(req.query.to))
+                isAfter(exercise.date, new Date(req.query.from)) &&
+                isBefore(exercise.date, new Date(req.query.to))
+            );
+          }
+
+          if(req.query.from){
+            exercises = exercises.filter(
+              (exercise) => isAfter(exercise.date, new Date(req.query.from)) 
+            );
+          }
+
+          if(req.query.to){
+            exercises = exercises.filter(
+              (exercise) => isBefore(exercise.date, new Date(req.query.to)) 
             );
           }
           exercises = exercises.map((exercise) => {
