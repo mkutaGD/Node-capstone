@@ -40,6 +40,7 @@ router.get("/:_id/logs", (req, res) => {
   User.findById(req.params._id)
     .then((user) => {
       Exercise.find({ user: req.params._id })
+        .lean()
         .sort({ date: 1 })
         .limit(+req.query.limit)
         .exec()
@@ -54,7 +55,6 @@ router.get("/:_id/logs", (req, res) => {
           exercises = exercises.map((exercise) => {
             return {...exercise, date: new Date(exercise.date).toDateString()};
           });
-          console.log(exercises)
           res.json({
             username: user.username,
             userId: user._id,
