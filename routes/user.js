@@ -37,33 +37,28 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:_id/logs", (req, res) => {
+  const from = req.query.from;
+  const to = req.query.to;
   User.findById(req.params._id)
     .then((user) => {
-      Exercise.find({ user: req.params._id })
+      Exercise.find({
+          user: req.params._id,
+          ...(
+            from || to 
+            ? {
+              date: {
+                ...(from ? { $gte: new Date(from) }: {}),
+                ...(to ? { $lte: new Date(to) } : {})
+              }
+            } : {}
+          )
+        })
         .lean()
         .sort({ date: 1 })
         .limit(+req.query.limit)
         .exec()
         .then((exercises) => {
-          if (req.query.from && req.query.to) {
-            exercises = exercises.filter(
-              (exercise) =>
-                isAfter(exercise.date, new Date(req.query.from)) &&
-                isBefore(exercise.date, new Date(req.query.to))
-            );
-          }
-
-          if(req.query.from){
-            exercises = exercises.filter(
-              (exercise) => isAfter(exercise.date, new Date(req.query.from)) 
-            );
-          }
-
-          if(req.query.to){
-            exercises = exercises.filter(
-              (exercise) => isBefore(exercise.date, new Date(req.query.to)) 
-            );
-          }
+         
           exercises = exercises.map((exercise) => {
             return {...exercise, date: new Date(exercise.date).toDateString()};
           });
